@@ -10,20 +10,16 @@ jobs:
   build:
     strategy:
       matrix:
-        toolchain: [stable, beta, 1.70.0]
+        toolchain: [stable, beta]
         os: [windows-2022, ubuntu-22.04, macos-12]
         exclude:
           - os: macos-12
             toolchain: beta
           - os: windows-2022
             toolchain: beta
-          - os: macos-12
-            toolchain: 1.70.0
-          - os: windows-2022
-            toolchain: 1.70.0
 
     runs-on: ${{ matrix.os }}
-    needs: clean
+    needs: [clean, check-msrv]
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -137,6 +133,36 @@ jobs:
         with:
           arguments: --manifest-path=demo-puffin/Cargo.toml
           command: check ${{ matrix.checks }}
+
+  check-msrv:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        config:
+          # The toolchains must match `rust-version` in the crate manifests
+          - toolchain: '1.60'
+            package: profiling
+            extra-args: --no-default-features
+          - toolchain: '1.65'
+            package: profiling-procmacros
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.config.toolchain }}
+          override: true
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          # Only cache registry
+          cache-targets: false
+
+      - name: Cargo check with old toolchain
+        run: >
+          cargo check
+          --package=${{ matrix.config.package }}
+          ${{ matrix.config.extra-args }}
 
   clean:
     runs-on: ubuntu-22.04
