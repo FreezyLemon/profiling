@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [clean, check-msrv]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.toolchain }}
@@ -100,7 +100,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.toolchain }}
@@ -147,7 +147,7 @@ jobs:
             package: profiling-procmacros
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.config.toolchain }}
@@ -167,7 +167,7 @@ jobs:
   clean:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
