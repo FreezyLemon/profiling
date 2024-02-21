@@ -155,7 +155,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
         with:
-          # Only cache registry
+          # Only cache the registry
           cache-targets: false
 
       - name: Cargo check with old toolchain
